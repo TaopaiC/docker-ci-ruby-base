@@ -1,0 +1,17 @@
+# Ruby
+#
+# VERSION 1
+#
+# docker build -t ci_example_app .
+
+FROM ci_ruby_base
+MAINTAINER TaopaiC, pctao.tw@gmail.com
+
+WORKDIR /app/
+RUN gem install bundler && rbenv rehash
+ADD .ruby-version /app/
+ADD Gemfile /app/
+ADD Gemfile.lock /app/
+RUN bundle install --jobs=4 --deployment
+ADD . /app/
+RUN RAILS_ENV=production bundle exec rake assets:precompile
